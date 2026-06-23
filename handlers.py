@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 from pathlib import Path
 
 from watchdog.events import (
@@ -10,6 +11,8 @@ from watchdog.events import (
 import config as cfg
 from file_utils import get_available_dest_path, move_file, has_stable_size
 from screenshot_utils import get_month_folder, is_screenshot
+
+logger = logging.getLogger(__name__)
 
 
 class ScreenshotEventHandler(FileSystemEventHandler):
@@ -35,12 +38,10 @@ class ScreenshotEventHandler(FileSystemEventHandler):
         if path.is_relative_to(cfg.SCREENSHOT_ROOT):
             return
         if not path.exists():
-            print("Skipped missing file:")
-            print(path)
+            logger.warning("Skipping missing file: %s", path)
             return
         if not has_stable_size(path):
-            print("Skipped unstable file:")
-            print(path)
+            logger.warning("Skipped unstable file: %s", path)
             return
         if not is_screenshot(path):
             return
@@ -50,13 +51,14 @@ class ScreenshotEventHandler(FileSystemEventHandler):
 
         dest_path = target_folder / path.name
         dest_path = get_available_dest_path(dest_path)
-        print("Screenshot detected:")
-        print(path)
+        logger.info("Screenshot detected %s", path)
 
         if cfg.DRY_RUN:
-            print("Dry run: would move to:")
-            print(dest_path)
+            logger.info("Dry run: would move to: %s", dest_path)
             return
-        move_file(path, dest_path)
-        print("Moved to:")
-        print(dest_path)
+        try:
+            move_file(path, dest_path)
+        except OSError:
+            logger.exception("Could not move file: %s", path)
+            return
+        logger.info("Moved to: %s", dest_path)

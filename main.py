@@ -1,3 +1,4 @@
+import logging
 import time
 
 from watchdog.observers import Observer
@@ -5,15 +6,20 @@ from watchdog.observers import Observer
 import config as cfg
 from handlers import ScreenshotEventHandler
 
+logger = logging.getLogger(__name__)
+
 
 def main() -> None:
+    logging.basicConfig(
+        level=cfg.LOG_LEVEL, format="%(asctime)s | %(levelname)s | %(message)s"
+    )
     event_handler = ScreenshotEventHandler()
 
     observer = Observer()
     observer.schedule(event_handler, path=cfg.DESKTOP_DIR, recursive=False)
     observer.start()
 
-    print(f"Watching: {cfg.DESKTOP_DIR}")
+    logger.info("Watching: %s", cfg.DESKTOP_DIR)
 
     try:
         while True:
