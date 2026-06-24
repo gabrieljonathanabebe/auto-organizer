@@ -5,14 +5,13 @@ from watchdog.observers import Observer
 
 import config as cfg
 from handlers import ScreenshotEventHandler
+from logging_utils import configure_logging
 
 logger = logging.getLogger(__name__)
 
 
 def main() -> None:
-    logging.basicConfig(
-        level=cfg.LOG_LEVEL, format="%(asctime)s | %(levelname)s | %(message)s"
-    )
+    configure_logging()
     event_handler = ScreenshotEventHandler()
 
     observer = Observer()

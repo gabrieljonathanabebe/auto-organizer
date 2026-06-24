@@ -9,6 +9,11 @@ IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg"}
 
 DRY_RUN = False
 
+LOG_DIR = Path.home() / "Library" / "Logs" / "AutoOrganizer"
+LOG_FILE = LOG_DIR / "auto-organizer.log"
+LOG_MAX_BYTES = 1_000_000
+LOG_BACKUP_COUNT = 3
+
 
 class LogLevel(StrEnum):
     DEBUG = "DEBUG"
