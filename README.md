@@ -25,12 +25,12 @@ Create and activate a virtual environment, then install dependencies:
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install watchdog
+python -m pip install -r requirements.txt
 ```
 
 Start the watcher:
 
-```python
+```bash
 python main.py
 ```
 
